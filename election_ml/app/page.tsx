@@ -17,7 +17,6 @@ import {
 import PollIcon from '@mui/icons-material/Poll';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import DataUsageIcon from '@mui/icons-material/DataUsage';
-import Footer from '../src/components/Footer';
 
 const Home: React.FC = () => {
   return (
@@ -201,9 +200,6 @@ const Home: React.FC = () => {
           </Stack>
         </Container>
       </Box>
-
-      {/* Footer */}
-      <Footer />
     </>
   );
 };
