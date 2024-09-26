@@ -1,7 +1,6 @@
-// pages/index.tsx
 import React from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
+import NavigationButton from './components/ClientNavigation'; // Import the ClientNavigation component
 import {
   AppBar,
   Toolbar,
@@ -11,7 +10,6 @@ import {
   Grid,
   Card,
   CardContent,
-  Button,
   Stack,
 } from '@mui/material';
 import PollIcon from '@mui/icons-material/Poll';
@@ -37,10 +35,15 @@ const Home: React.FC = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Election Polling ML
           </Typography>
-          <Button color="inherit">Home</Button>
-          <Button color="inherit" variant="outlined" sx={{ ml: 2 }}>
-            Explore Data
-          </Button>
+
+          {/* Add a wrapping Box for both buttons to control the layout */}
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            {/* "Home" Button */}
+            <NavigationButton label="Home" route="/" color="inherit" />
+
+            {/* "Explore Data" Button */}
+            <NavigationButton label="Explore Data" route="/data" variant="outlined" color="inherit" />
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -76,12 +79,9 @@ const Home: React.FC = () => {
             spacing={3}
             justifyContent="center"
           >
-            <Button variant="contained" color="primary" size="large">
-              Explore Data
-            </Button>
-            <Button variant="outlined" color="primary" size="large">
-              View Predictions
-            </Button>
+            {/* Use the NavigationButton (Client Component) for routing */}
+            <NavigationButton label="Explore Data" route="/data" />
+            <NavigationButton label="View Predictions" route="/predictions" variant="outlined" />
           </Stack>
         </Container>
       </Box>
@@ -191,12 +191,8 @@ const Home: React.FC = () => {
             spacing={2}
             justifyContent="center"
           >
-            <Button variant="contained" color="secondary" size="large">
-              Get Started
-            </Button>
-            <Button variant="outlined" color="secondary" size="large">
-              Learn More
-            </Button>
+            <NavigationButton label="Get Started" route="/get-started" />
+            <NavigationButton label="Learn More" route="/learn-more" variant="outlined" />
           </Stack>
         </Container>
       </Box>
