@@ -191,7 +191,7 @@ const Home: React.FC = () => {
             spacing={2}
             justifyContent="center"
           >
-            <NavigationButton label="Get Started" route="/get-started" />
+            <NavigationButton label="Get Started" route="/data" />
             <NavigationButton label="Learn More" route="/learn-more" variant="outlined" />
           </Stack>
         </Container>
