@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
+from election_ml.predict import predict_outcome  # Import the prediction function
+from election_ml.preprocess import preprocess_data  # Import the preprocess function
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -14,14 +16,24 @@ migrate = Migrate(app, db)  # Set up migrations
 def home():
     return "Election ML Flask App is Running"
 
+# Prediction route
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json.get('input_data')
-    if not data:
+    polling_data = request.json.get('input_data')  # Get input data from request body
+    if not polling_data:
         return jsonify({"error": "No input data provided"}), 400
 
-    # Perform prediction logic (ML model, etc.)
-    prediction_result = "Sample Prediction"  # Replace with real prediction logic
+    # Preprocess the data before making a prediction
+    try:
+        processed_data = preprocess_data(polling_data)  # Preprocess the input data
+    except Exception as e:
+        return jsonify({"error": f"Preprocessing failed: {str(e)}"}), 400
+
+    # Perform prediction logic (ML model)
+    try:
+        prediction_result = predict_outcome(processed_data)  # Make prediction
+    except Exception as e:
+        return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
 
     return jsonify({"result": prediction_result}), 200
 
