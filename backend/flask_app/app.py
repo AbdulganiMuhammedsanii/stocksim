@@ -1,10 +1,16 @@
+print("Starting Flask app...")
+import sys
+import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from election_ml.predict import predict_outcome  # Import the prediction function
 from election_ml.preprocess import preprocess_data  # Import the preprocess function
 
+print("made it here at least")
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -23,6 +29,8 @@ def predict():
     if not polling_data:
         return jsonify({"error": "No input data provided"}), 400
 
+    print("preprocessing data")
+
     # Preprocess the data before making a prediction
     try:
         processed_data = preprocess_data(polling_data)  # Preprocess the input data
@@ -30,6 +38,7 @@ def predict():
         return jsonify({"error": f"Preprocessing failed: {str(e)}"}), 400
 
     # Perform prediction logic (ML model)
+    print("Making prediction...")
     try:
         prediction_result = predict_outcome(processed_data)  # Make prediction
     except Exception as e:
