@@ -90,7 +90,7 @@ export default function Dashboard() {
           <Card sx={{ mb: 4, borderRadius: 2, boxShadow: 3 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2 }} align="center">
-                Predicted Winner: {prediction.winner}
+                Predicted Election Winner: {prediction.winner}
               </Typography>
               <Typography align="center">
                 Trump Avg Probability: {prediction.candidate_0_avg_prob}
