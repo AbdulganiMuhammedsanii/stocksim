@@ -4,6 +4,7 @@ import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_cors import CORS  # Import CORS
 from config import Config
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -12,11 +13,13 @@ from election_ml.preprocess import preprocess_data  # Import the preprocess func
 
 print("made it here at least")
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(Config)
 
 db = SQLAlchemy(app)  # Initialize SQLAlchemy with the Flask app
 migrate = Migrate(app, db)  # Set up migrations
 
+print("arigato")
 # Define a simple route
 @app.route('/')
 def home():
@@ -25,11 +28,12 @@ def home():
 # Prediction route
 @app.route('/predict', methods=['POST'])
 def predict():
+    print("yaya")
     polling_data = request.json.get('input_data')  # Get input data from request body
     if not polling_data:
         return jsonify({"error": "No input data provided"}), 400
 
-    print("preprocessing data")
+    print("preprocessing data", polling_data)
 
     # Preprocess the data before making a prediction
     try:
@@ -38,12 +42,13 @@ def predict():
         return jsonify({"error": f"Preprocessing failed: {str(e)}"}), 400
 
     # Perform prediction logic (ML model)
-    print("Making prediction...")
+    print("Making prediction...", processed_data)
     try:
-        prediction_result = predict_outcome(processed_data)  # Make prediction
+        prediction_result = predict_outcome()  # Make prediction
     except Exception as e:
         return jsonify({"error": f"Prediction failed: {str(e)}"}), 500
 
+    print(prediction_result)
     return jsonify({"result": prediction_result}), 200
 
 @app.route('/fetch-data', methods=['GET'])

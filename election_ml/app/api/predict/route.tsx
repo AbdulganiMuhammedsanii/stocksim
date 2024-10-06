@@ -11,6 +11,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5
 export const predictElection = async (data: any) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/predict`, data);
+    console.log("abdul", response.data);
     return response.data;
   } catch (error) {
     console.error('Prediction API error:', error);

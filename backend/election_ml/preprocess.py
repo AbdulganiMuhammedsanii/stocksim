@@ -11,17 +11,22 @@ def preprocess_data(polling_data):
     # Convert polling_data (e.g., JSON) to a pandas DataFrame for easier processing
     df = pd.DataFrame([polling_data])
 
-    # Example: Encode categorical variables (e.g., candidate names)
+    # Encode categorical variables (e.g., candidate names)
     if 'candidate' in df.columns:
         label_encoder = LabelEncoder()
         df['candidate'] = label_encoder.fit_transform(df['candidate'])
     
-    # Example: Handle missing values (e.g., fill NaNs with mean or a constant)
+    # Handle missing values (e.g., fill NaNs with mean or a constant)
     df.fillna(df.mean(), inplace=True)
 
-    # Example: Standardize numerical features (e.g., percentages, sample sizes)
-    scaler = StandardScaler()
+    # Standardize numerical features (e.g., percentages, sample sizes) 
+    # Only if there is more than one sample to avoid scaling to 0
     numerical_columns = ['polling_percentage', 'sample_size']
-    df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
+    
+    if len(df) > 1:  # Apply scaler only if more than one row
+        scaler = StandardScaler()
+        df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
+    else:
+        df[numerical_columns] = df[numerical_columns]  # No scaling for single row
     
     return df
