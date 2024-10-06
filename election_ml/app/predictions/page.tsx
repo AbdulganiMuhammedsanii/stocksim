@@ -68,7 +68,7 @@ export default function Dashboard() {
         <Toolbar>
           <PollIcon sx={{ mr: 2 }} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Election Polling Data Dashboard
+            Election Polling Dashboard
           </Typography>
           {/* Home Button inside AppBar */}
           <ClientNavigationButton label="Home" route="/" color="inherit" variant="outlined" />
