@@ -42,7 +42,7 @@ def predict():
         return jsonify({"error": f"Preprocessing failed: {str(e)}"}), 400
 
     # Perform prediction logic (ML model)
-    print("Making prediction...", processed_data)
+    print("Making predictions...", processed_data)
     try:
         prediction_result = predict_outcome()  # Make prediction
     except Exception as e:
