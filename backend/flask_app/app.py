@@ -3,6 +3,7 @@ import sys
 import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine, text
 from flask_migrate import Migrate
 from flask_cors import CORS  # Import CORS
 from config import Config
@@ -53,50 +54,40 @@ def predict():
 
 @app.route('/fetch-data', methods=['GET'])
 def fetch_data():
-    # Pseudo polling data for Kamala Harris and Donald Trump in all states
-    polling_data = [
-        {"state": "California", "polls": [
-            {"candidate": "Kamala Harris", "percentage": 55},
-            {"candidate": "Donald Trump", "percentage": 45}
-        ]},
-        {"state": "Texas", "polls": [
-            {"candidate": "Donald Trump", "percentage": 60},
-            {"candidate": "Kamala Harris", "percentage": 40}
-        ]},
-        {"state": "Florida", "polls": [
-            {"candidate": "Donald Trump", "percentage": 52},
-            {"candidate": "Kamala Harris", "percentage": 48}
-        ]},
-        {"state": "New York", "polls": [
-            {"candidate": "Kamala Harris", "percentage": 58},
-            {"candidate": "Donald Trump", "percentage": 42}
-        ]},
-        {"state": "Georgia", "polls": [
-            {"candidate": "Donald Trump", "percentage": 51},
-            {"candidate": "Kamala Harris", "percentage": 49}
-        ]},
-        {"state": "Pennsylvania", "polls": [
-            {"candidate": "Kamala Harris", "percentage": 50},
-            {"candidate": "Donald Trump", "percentage": 50}
-        ]},
-        {"state": "Michigan", "polls": [
-            {"candidate": "Kamala Harris", "percentage": 53},
-            {"candidate": "Donald Trump", "percentage": 47}
-        ]},
-        {"state": "Arizona", "polls": [
-            {"candidate": "Kamala Harris", "percentage": 49},
-            {"candidate": "Donald Trump", "percentage": 51}
-        ]},
-        {"state": "Ohio", "polls": [
-            {"candidate": "Donald Trump", "percentage": 54},
-            {"candidate": "Kamala Harris", "percentage": 46}
-        ]},
-        {"state": "North Carolina", "polls": [
-            {"candidate": "Donald Trump", "percentage": 52},
-            {"candidate": "Kamala Harris", "percentage": 48}
-        ]}
-    ]
-    return jsonify(polling_data), 200
+    try:
+        # Connect to the database
+        engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+        
+        # Query to fetch polling data
+        query = """
+        SELECT id, polling_percentage, demographics_feature_1, demographics_feature_2, election_outcome, state
+        FROM polling_data
+        LIMIT 5
+        """
+        
+        # Execute the query and fetch results
+        with engine.connect() as connection:
+            result = connection.execute(text(query))
+            rows = result.fetchall()
+
+        # Process the data
+        polling_data = []
+        for row in rows:
+            state_name = row.state  # Using id as a placeholder for state name
+            kamala_percentage = row.polling_percentage if row.election_outcome == 0 else 100 - row.polling_percentage
+            trump_percentage = 100 - kamala_percentage
+
+            polling_data.append({
+                "state": state_name,
+                "polls": [
+                    {"candidate": "Kamala Harris", "percentage": round(kamala_percentage, 2)},
+                    {"candidate": "Donald Trump", "percentage": round(trump_percentage, 2)}
+                ]
+            })
+
+        return jsonify(polling_data), 200
+    except Exception as e:
+        return jsonify({"error": f"Failed to fetch data: {str(e)}"}), 500
 
 
 # Example model (optional, can be placed in models.py)
