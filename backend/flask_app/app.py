@@ -62,7 +62,6 @@ def fetch_data():
         query = """
         SELECT id, polling_percentage, demographics_feature_1, demographics_feature_2, election_outcome, state
         FROM polling_data
-        LIMIT 5
         """
         
         # Execute the query and fetch results
