@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import {
   AppBar,
@@ -17,6 +18,19 @@ import {
 } from '@mui/material';
 import PollIcon from '@mui/icons-material/Poll';
 import ClientNavigationButton from './ClientNavigation'; // Import the navigation button
+import dynamic from 'next/dynamic';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+
+const Pie = dynamic(() => import('react-chartjs-2').then((mod) => mod.Pie), { ssr: false });
+
+// Import Chart.js components
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+// Register Chart.js components
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 
 // Fetching data directly in a Server Component
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:5000';
@@ -61,44 +75,66 @@ export default async function Dashboard() {
           Election Polling Data by State
         </Typography>
 
-        {/* Iterate over each state's polling data */}
         {pollingData.length === 0 ? (
           <Typography align="center" color="text.secondary">
             No polling data available.
           </Typography>
         ) : (
-          pollingData.map((stateData: any, index: number) => (
-            <Card key={index} sx={{ mb: 4, borderRadius: 2, boxShadow: 3 }}>
-              <CardContent>
-                <Typography variant="h5" sx={{ mb: 2 }} align="center">
-                  {stateData.state}
-                </Typography>
-                <TableContainer component={Paper} elevation={3}>
-                  <Table aria-label={`${stateData.state} polling data`} sx={{ minWidth: 400 }}>
-                    <TableHead sx={{ bgcolor: 'primary.main' }}>
-                      <TableRow>
-                        <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Candidate</TableCell>
-                        <TableCell align="right" sx={{ color: 'white', fontWeight: 'bold' }}>
-                          Percentage (%)
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {stateData.polls.map((poll: any, pollIndex: number) => (
-                        <TableRow
-                          key={pollIndex}
-                          sx={{ '&:nth-of-type(odd)': { bgcolor: 'action.hover' } }}
-                        >
-                          <TableCell>{poll.candidate}</TableCell>
-                          <TableCell align="right">{poll.percentage}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-            </Card>
-          ))
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 4 }}>
+            {pollingData.map((stateData: any, index: number) => (
+              <Card key={index} sx={{ width: 350, borderRadius: 2, boxShadow: 3 }}>
+                <CardContent>
+                  <Typography variant="h5" sx={{ mb: 2 }} align="center">
+                    {stateData.state}
+                  </Typography>
+                  <Box sx={{ height: 300 }}>
+                    <Pie
+                      data={{
+                        labels: stateData.polls.map((poll: any) => poll.candidate),
+                        datasets: [
+                          {
+                            data: stateData.polls.map((poll: any) => poll.percentage),
+                            backgroundColor: [
+                              '#FF6384',
+                              '#36A2EB',
+                              '#FFCE56',
+                              '#4BC0C0',
+                              '#9966FF',
+                              '#FF9F40',
+                            ],
+                            hoverBackgroundColor: [
+                              '#FF6384',
+                              '#36A2EB',
+                              '#FFCE56',
+                              '#4BC0C0',
+                              '#9966FF',
+                              '#FF9F40',
+                            ],
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: function (context) {
+                                return `${context.label}: ${context.formattedValue}%`;
+                              }
+                            }
+                          }
+                        },
+                      }}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
         )}
       </Container>
     </>
