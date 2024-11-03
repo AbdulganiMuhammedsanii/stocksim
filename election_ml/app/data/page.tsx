@@ -87,7 +87,7 @@ export default async function Dashboard() {
                   <Typography variant="h5" sx={{ mb: 2 }} align="center">
                     {stateData.state}
                   </Typography>
-                  <Box sx={{ height: 300 }}>
+                  <Box sx={{ height: 150 }}>
                     <Pie
                       data={{
                         labels: stateData.polls.map((poll: any) => poll.candidate),
