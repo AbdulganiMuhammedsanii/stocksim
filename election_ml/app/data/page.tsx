@@ -59,13 +59,15 @@ export default async function Dashboard() {
     <>
       {/* AppBar */}
       <AppBar position="static" color="primary">
-        <Toolbar>
-          <PollIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Toolbar sx={{ display: 'flex', alignItems: 'center' }}>
+          <PollIcon sx={{ mr: 2, my: 'auto' }} />
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, my: 'auto' }}>
             Election Polling Data Dashboard
           </Typography>
           {/* Home Button inside AppBar */}
-          <ClientNavigationButton label="Home" route="/" color="inherit" variant="outlined" />
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ClientNavigationButton label="Home" route="/" color="inherit" variant="outlined" />
+          </Box>
         </Toolbar>
       </AppBar>
 
